@@ -1,0 +1,578 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+session_start();
+require_once __DIR__ . '/../login/config.php';
+
+$is_logged_in = isset($_SESSION['user_id']);
+$username = $is_logged_in ? $_SESSION['username'] : '';
+
+$products = [
+    ['id' => 1, 'name' => 'Voltric Smash Pro Racket', 'category' => 'Rackets', 'price' => 149.99, 'tag' => 'Best Seller', 'description' => 'High-tension frame designed for aggressive, powerful smashers looking to dominate.', 'image' => 'https://www.smashgear.co.uk/cdn/shop/files/VICTOR-DRIVE-X-10-METALLIC-C-Badminton-Racket-Smas-0.jpg?v=1745491276&width=700'],
+    ['id' => 4, 'name' => 'Astrox 99 Tour Edition', 'category' => 'Rackets', 'price' => 219.99, 'tag' => 'Elite Choice', 'description' => 'Head-heavy power racket engineered with premium Namd graphite for explosive smash angles.', 'image' => 'https://e78.us/cdn/shop/products/AX99LCW_0cc34cb2-c104-400c-a62c-5bbae3b0d593_590x.jpg?v=1565070031'],
+    ['id' => 5, 'name' => 'Nanoflare Speed Carbon Racket', 'category' => 'Rackets', 'price' => 179.99, 'tag' => 'Lightning Fast', 'description' => 'Ultra-lightweight aero-frame configuration perfect for defensive counters and rapid net play.', 'image' => 'https://www.btracketsports.com/cdn/shop/products/nanoflare-1000z-491518_1400x.webp?v=1702259659'],
+    ['id' => 7, 'name' => 'Duora 10 Dual-Frame Racket', 'category' => 'Rackets', 'price' => 199.99, 'tag' => 'Hybrid Tech', 'description' => 'Box frame for power on forehand, aero frame for high speed response on backhand clears.', 'image' => 'https://5.imimg.com/data5/SELLER/Default/2021/4/OA/EX/IN/49705393/duorazstrike-500x500.jpg'],
+    ['id' => 8, 'name' => 'ArcSaber 11 Control Frame', 'category' => 'Rackets', 'price' => 189.99, 'tag' => 'Precision Control', 'description' => 'Neo CS Carbon Nanotube construction improves frame elasticity to hold shuttle on string bed longer.', 'image' => 'https://www.badmintonavenue.com/cdn/shop/files/arc11-ph1_600x600_4b25c76e-bff2-4e6c-a5fd-928296b8cf28.webp?v=1732102895&width=1200'],
+    ['id' => 9, 'name' => 'Thruster K Falcon Combat Racket', 'category' => 'Rackets', 'price' => 239.99, 'tag' => 'Heavy Attacker', 'description' => 'Multi-layer carbon design supporting extreme high-tension string sets up to 32lbs effortlessly.', 'image' => 'https://therallyshop.com/cdn/shop/files/1_cb303656-f827-43d4-aa76-d0c7d60b203c.png?v=1756058131&width=1500'],
+
+    ['id' => 2, 'name' => 'Aerosonic Feather Shuttles 20', 'category' => 'Shuttlecocks', 'price' => 29.99, 'tag' => 'Premium Quality', 'description' => 'Tournament grade goose feather shuttles offering pristine flight trajectories and durability.', 'image' => 'https://yumo.ca/cdn/shop/products/as20-yumo_1024x1024.jpg?v=1571276757'],
+    ['id' => 10, 'name' => 'Victor Master No. 1 Championship Shuttles', 'category' => 'Shuttlecocks', 'price' => 34.99, 'tag' => 'BWF Approved', 'description' => 'Official BWF approved flight metrics using premium selected white goose feathers.', 'image' => 'https://therallyshop.com/cdn/shop/files/1456_0_20230419163918.jpg?v=1745211086&width=675'],
+    ['id' => 11, 'name' => 'Mavis 2000 Nylon Shuttles (6pk)', 'category' => 'Shuttlecocks', 'price' => 18.50, 'tag' => 'Club Practice', 'description' => 'Precision synthetic wing design providing accurate flight performance comparable to genuine feathers.', 'image' => 'https://i.ebayimg.com/images/g/xtYAAOSwj6ZnYZVP/s-l500.jpg'],
+    ['id' => 12, 'name' => 'Aeroclub TR Club Feathers', 'category' => 'Shuttlecocks', 'price' => 24.99, 'tag' => 'Value Pack', 'description' => 'Excellent structural durability suited perfectly for high-frequency multi-shuttle training sessions.', 'image' => 'https://www.badmintonalley.com/v/vspfiles/photos/SHUTTLECOCK-YONEX-ACB-TR-2T.jpg?v-cache=1765504033'],
+    ['id' => 13, 'name' => 'Propetrel 757 Hybrid 3-in-1 Shuttles', 'category' => 'Shuttlecocks', 'price' => 27.99, 'tag' => 'Hybrid Core', 'description' => 'Composite cork base bonded with natural feathers to ensure robust smash resilience.', 'image' => 'https://m.media-amazon.com/images/I/51eJRnJIj0L.jpg'],
+    ['id' => 14, 'name' => 'Yonex Mavis 350 Nylon Shuttles', 'category' => 'Shuttlecocks', 'price' => 38.00, 'tag' => 'Limited Release', 'description' => 'Specially selected dark accent feathers built for maximum tracking visibility inside low-light courts.', 'image' => 'https://www.nydhi.com/cdn/shop/files/mavis350_blue_400x_crop_center.webp?v=1745124445'],
+
+    ['id' => 3, 'name' => 'Hundred Hypercourt Badminton Shoes', 'category' => 'Footwear', 'price' => 89.99, 'tag' => 'Grip Tech', 'description' => 'Non-marking natural rubber gum soles with advanced pivot point patterns for rapid changes of direction.', 'image' => 'https://centralsports.co.uk/cdn/shop/files/Untitleddesign-2025-12-29T123359.319_216x.png?v=1766982901'],
+    ['id' => 6, 'name' => 'Boys Mesh Pro Ase Court Shoes', 'category' => 'Footwear', 'price' => 124.99, 'tag' => 'Shock Absorb', 'description' => 'Equipped with enhanced shock cushion insoles to minimize impact and protect knees during high jumps.', 'image' => 'https://5.imimg.com/data5/BJ/PB/MY-48183436/blue-1000x1000.jpg'],
+    ['id' => 15, 'name' => 'Yonex Power Cushion Eclipsion X', 'category' => 'Footwear', 'price' => 159.99, 'tag' => 'Elite Stability', 'description' => 'Asymmetric upper cut shell construction engineered to withstand extreme high-speed lateral sliding.', 'image' => 'https://racketsports.hk/wp-content/uploads/2019/06/Yonex_Power_Cushion_EclipsionX.jpg'],
+    ['id' => 16, 'name' => 'Yonex Comfort Z2 Wide Shoes', 'category' => 'Footwear', 'price' => 134.99, 'tag' => 'Ergonomic Base', 'description' => 'Wider toe box chassis design offering ultra-plush landing comfort for prolonged tournament matches.', 'image' => 'https://www.sportsuncle.com/image/cache/catalog/images/yonex/shoes/cftz2wide-500x500.webp'],
+    ['id' => 17, 'name' => 'Yonex Power Cushion Eclipsion Z3 Unisex', 'category' => 'Footwear', 'price' => 114.99, 'tag' => 'Ultra Light', 'description' => 'Utilizes direct carbon fiber plate inserts inside the midsole logic for explosive forward lunges.', 'image' => 'https://www.badmintonwarehouse.com/cdn/shop/files/Eclipsion_Z3_Badminton_Shoes_Wide_512x512.jpg?v=1690776417'],
+    ['id' => 18, 'name' => 'Vector X Trackle', 'category' => 'Footwear', 'price' => 95.00, 'tag' => 'Ankle Guard', 'description' => 'High-profile padded collar assembly built to securely anchor ankles from accidental twists.', 'image' => 'https://www.vector-x.com/cdn/shop/files/7_21515728-fac6-4388-a505-05c9ebfde649.jpg?v=1774432553&width=1100'],
+
+    ['id' => 19, 'name' => 'Paletero PRO SERIES negro ', 'category' => 'Bags & Accessories', 'price' => 79.99, 'tag' => 'Thermal Shell', 'description' => 'Integrated internal silver thermal insulation linings safeguarding expensive frame tensions from heat.', 'image' => 'https://noxsport.com/cdn/shop/products/paletero-pro-series-negro-2023-bpprosblack-8436603195713-557144.jpg?v=1702909841&width=2000'],
+    ['id' => 20, 'name' => 'BG-80 High-Repulsion String Pack ', 'category' => 'Bags & Accessories', 'price' => 14.99, 'tag' => 'Crisp Sound', 'description' => 'Vectran oval fiber structure providing crisp piercing impact sound signatures with elite smash power.', 'image' => 'https://m.media-amazon.com/images/I/91CYYPmkzbL.jpg'],
+    ['id' => 21, 'name' => 'Yonex Super Grap Premium Overgrip (12pk)', 'category' => 'Bags & Accessories', 'price' => 22.00, 'tag' => 'Tacky Feel', 'description' => 'Ultra-absorbent tacky polyurethane wrap layers preventing handle slippage during high sweat outputs.', 'image' => 'https://santamonicapickleballcenter.com/cdn/shop/files/ScreenShot2023-12-26at9.40.32AM.png?v=1703612439&width=1445'],
+    ['id' => 22, 'name' => 'Yonex 249011 Badminton Tour Stand', 'category' => 'Bags & Accessories', 'price' => 69.99, 'tag' => 'Easy Transport', 'description' => 'Vertical standing backplate configuration featuring separate laundry ventilation bags for shoes.', 'image' => 'https://joybadminton.com/cdn/shop/files/Yonex249011BadmintonTennisStandBackpack_White_ad1f197c-d8d3-4b71-ba06-4b5c45cbdc49.png?v=1757444319&width=533'],
+    ['id' => 23, 'name' => 'Yonex Pro Tournament Kit Bag', 'category' => 'Bags & Accessories', 'price' => 89.99, 'tag' => 'Tournament Ready', 'description' => 'Spacious multi-compartment design with reinforced zippers and padded straps for comfort.', 'image' => 'https://www.shopping.tennis/wp-content/uploads/2022/11/Yonex-Tour-Edition-Kit-Bag-Pro-Tournament-Tennis-Bag-from-Tennis-Bags-Backpacks.jpg'],
+    ['id' => 24, 'name' => 'Victor Multithermobag BR9313 CF', 'category' => 'Bags & Accessories', 'price' => 74.99, 'tag' => 'Durable Build', 'description' => 'Heavy-duty water-resistant fabric with reinforced stitching for long-lasting durability.', 'image' => 'https://www.rsgsport.com/images/victor-multithermobag-br9313-cf-p1797-9385_thumb.jpg'],
+];
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smash Pro Storefront - Premium Equipment</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f3f7fc 0%, #e6effa 100%);
+            --text-main: #2d3748;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --card-border: rgba(227, 238, 252, 0.9);
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --title-color: #1a202c;
+            --badge-bg: rgba(255, 255, 255, 0.95);
+            --search-bg: #ffffff;
+            --search-border: #cbd5e1;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --card-bg: #1e293b;
+            --card-border: rgba(51, 65, 85, 0.5);
+            --header-bg: rgba(15, 23, 42, 0.85);
+            --title-color: #ffffff;
+            --badge-bg: #334155;
+            --search-bg: #1e293b;
+            --search-border: #475569;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        header {
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(47, 199, 52, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e8a4b;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: #5e3b96;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        [data-theme="dark"] .nav-links a {
+            color: #a78bfa;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(47, 199, 52, 0.12);
+            color: #1e8a4b !important;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background: #1e8a4b;
+            color: #ffffff !important;
+            transform: translateX(-3px);
+        }
+
+        .theme-toggle {
+            background: rgba(94, 59, 150, 0.1);
+            color: #5e3b96;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--title-color);
+            margin: 0;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 45px;
+            font-size: 16px;
+            border-radius: 16px;
+            background: var(--search-bg);
+            border: 2px solid var(--search-border);
+            color: var(--text-main);
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #2fc734;
+            box-shadow: 0 4px 15px rgba(47, 199, 52, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .img-wrapper {
+            width: 100%;
+            height: 200px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+            position: relative;
+            cursor: zoom-in;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .img-wrapper:hover .product-img {
+            transform: scale(1.05);
+        }
+
+        .zoom-hint {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+
+        .img-wrapper:hover .zoom-hint {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--badge-bg);
+            color: #5e3b96;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 800;
+            z-index: 2;
+        }
+
+        [data-theme="dark"] .badge {
+            color: #a78bfa;
+        }
+
+        .tag-info {
+            display: inline-block;
+            background: rgba(47, 199, 52, 0.15);
+            color: #2fc734;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .product-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--title-color);
+            margin: 0 0 6px 0;
+        }
+
+        .price {
+            font-size: 21px;
+            font-weight: 800;
+            color: #2fc734;
+            margin-bottom: 12px;
+        }
+
+        .desc {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin: 0 0 1.5rem 0;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .btn-action {
+            width: 100%;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-purchase {
+            background: linear-gradient(135deg, #2fc734 0%, #1e8a4b 100%);
+            color: #ffffff;
+        }
+
+        .btn-purchase:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-login {
+            background: #475569;
+            color: #ffffff;
+        }
+
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 4rem;
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px dashed var(--search-border);
+            color: var(--text-muted);
+        }
+
+        .lightbox-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lightbox-content-wrapper {
+            position: relative;
+            max-width: 85%;
+            max-height: 75vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 75vh;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .lightbox-modal.active .lightbox-img {
+            transform: scale(1);
+        }
+
+        .lightbox-caption {
+            color: #fff;
+            margin-top: 1.5rem;
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 25px; right: 30px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: none;
+            font-size: 28px;
+            width: 50px; height: 50px;
+            line-height: 46px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .lightbox-close:hover {
+            background: #ef4444;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="home.php" class="logo">SmashPro Badminton</a>
+        <div class="nav-links">
+            <button class="theme-toggle" id="themeBtn">🌓 Mode</button>
+            <a href="home.php" class="btn-back">← Back to Home</a>
+
+            <?php if ($is_logged_in): ?>
+                <a href="../login/dashboard.php">My Account</a>
+            <?php else: ?>
+                <a href="../login/login.php">Sign In</a>
+            <?php endif; ?>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="section-header-row">
+            <h2 class="section-title">Professional Inventory Catalog</h2>
+            <div class="search-container">
+                <span class="search-icon"></span>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search elite rackets, shoes, bags...">
+            </div>
+        </div>
+
+        <div id="noResults" class="no-results">
+            No equipment matches your search query. Try another keyword!
+        </div>
+
+        <div class="grid" id="productGrid">
+            <?php foreach ($products as $item): ?>
+                <div class="product-card" data-name="<?= strtolower(htmlspecialchars($item['name'])) ?>" data-category="<?= strtolower(htmlspecialchars($item['category'])) ?>">
+                    <div>
+                        <div class="img-wrapper lightbox-trigger" data-imgsrc="<?= htmlspecialchars($item['image']) ?>" data-caption="<?= htmlspecialchars($item['name']) ?>">
+                            <span class="badge"><?= htmlspecialchars($item['category']) ?></span>
+                            <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>" class="product-img">
+                            <span class="zoom-hint">Click to Zoom </span>
+                        </div>
+                        <span class="tag-info"><?= htmlspecialchars($item['tag']) ?></span>
+                        <h3 class="product-title"><?= htmlspecialchars($item['name']) ?></h3>
+                        <div class="price">$<?= number_format($item['price'], 2) ?></div>
+                        <p class="desc"><?= htmlspecialchars($item['description']) ?></p>
+                    </div>
+
+                    <?php if ($is_logged_in): ?>
+                        <form action="purchase.php" method="POST">
+                            <input type="hidden" name="product_id" value="<?= $item['id'] ?>">
+                            <button type="submit" class="btn-action btn-purchase">Purchase Gear</button>
+                        </form>
+                    <?php else: ?>
+                        <button class="btn-action btn-login" onclick="window.location.href='../login/login.php'">Sign In to Purchase</button>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <div class="lightbox-modal" id="lightboxModal">
+        <button class="lightbox-close" id="lightboxClose">&times;</button>
+        <div class="lightbox-content-wrapper">
+            <img src="" alt="Magnified View" class="lightbox-img" id="lightboxImg">
+        </div>
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+
+    <script>
+        const themeBtn = document.getElementById('themeBtn');
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+
+        themeBtn.addEventListener('click', () => {
+            if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        const searchInput = document.getElementById('searchInput');
+        const cards = document.querySelectorAll('.product-card');
+        const noResults = document.getElementById('noResults');
+
+        function applyFilter(queryText) {
+            let visibleCount = 0;
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                const category = card.getAttribute('data-category');
+                if (name.includes(queryText) || category.includes(queryText)) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            applyFilter(query);
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get('category');
+
+            if (categoryParam) {
+                const lowerCategory = categoryParam.toLowerCase().trim();
+                searchInput.value = lowerCategory;
+                applyFilter(lowerCategory);
+            }
+        });
+
+        const lightboxModal = document.getElementById('lightboxModal');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxCaption = document.getElementById('lightboxCaption');
+        const lightboxClose = document.getElementById('lightboxClose');
+        const triggers = document.querySelectorAll('.lightbox-trigger');
+
+        triggers.forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                if (e.target.classList.contains('badge')) return;
+                const imageSource = trigger.getAttribute('data-imgsrc');
+                const itemCaption = trigger.getAttribute('data-caption');
+                lightboxImg.src = imageSource;
+                lightboxCaption.textContent = itemCaption;
+                lightboxModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        function closeLightbox() {
+            lightboxModal.classList.remove('active');
+            document.body.style.overflow = '';
+            setTimeout(() => { lightboxImg.src = ''; }, 300);
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightboxModal.addEventListener('click', (e) => {
+            if (e.target === lightboxModal || e.target.classList.contains('lightbox-content-wrapper')) {
+                closeLightbox();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightboxModal.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
